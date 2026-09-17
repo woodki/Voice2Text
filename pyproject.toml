@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voice2text"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+dependencies = [
+    "funasr==1.4.15",
+    "torchaudio==2.11.0",
+    "google-genai",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+build = [
+    "pyinstaller",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
