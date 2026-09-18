@@ -1,32 +1,34 @@
 # Voice2Text
 
-Voice2Text 是一个本地桌面语音转写工具，支持将语音/录音文件转换为文本，并保存为 Markdown。
+English | [中文](README.zh-CN.md)
 
-它也可以用于英语口语练习：用户可以输入 Gemini API Key 开启 AI 纠错，对英文转写结果进行修正和润色，使表达更加自然、流畅。
+Voice2Text is a local desktop speech-to-text application that converts speech and audio recordings into text and saves the results as Markdown files.
 
-## 核心功能
+It can also be used for English speaking practice. Users can enter their own Gemini API Key to enable AI-powered correction, which corrects errors in English transcriptions and provides suggestions for more natural and fluent expressions.
 
-- **中英文语音转写**：使用 Fun-ASR-Nano 模型将语音/录音转换为文本。
-- **语言选择**：支持自动检测、中文、英文三种语言模式。
-- **AI 英语纠错**：用户可输入 Gemini API Key 开启 AI 纠错，修正英文表达中的错误，并提供更加自然、流畅的表达建议。
-- **Markdown 保存**：转写结果以 Markdown 格式保存到用户自定义的文件夹中。
-- **文件名冲突处理**：当输出文件重名时，自动在文件名后添加序号，避免覆盖已有文件。
-- **转换时间记录**：生成的 Markdown 文件中会记录转换时间。
+## Core Features
 
-## 技术栈
+- **Chinese and English Speech Transcription**: Uses the Fun-ASR-Nano model to transcribe speech and audio recordings into text.
+- **Language Selection**: Supports three language modes: automatic detection, Chinese, and English.
+- **AI-powered English Correction**: Users can enter their own Gemini API Key to enable AI correction, correct errors in English transcriptions, and receive suggestions for more natural and fluent expressions.
+- **Markdown Output**: Saves transcription results as Markdown files in a user-selected folder.
+- **Filename Conflict Handling**: Automatically adds a sequence number to duplicate filenames to prevent existing files from being overwritten.
+- **Conversion Time Recording**: Records the conversion time in the generated Markdown file.
 
-- **Python**：项目主要开发语言
-- **Tkinter**：桌面 GUI
-- **Fun-ASR-Nano**：当前默认 ASR 模型，用于中英文语音转写
-- **Whisper**：早期使用的转写方案，目前保留作为备用实现
-- **PyTorch + CUDA**：模型加载与 GPU 推理
-- **Gemini API**：英文纠错与表达优化
-- **pytest**：自动化测试
-- **PyInstaller**：Windows 应用打包
+## Tech Stack
 
-## 项目结构
+- **Python**: Primary programming language
+- **Tkinter**: Desktop GUI
+- **Fun-ASR-Nano**: Current default ASR model for Chinese and English speech transcription
+- **Whisper**: Previously used transcription solution, currently retained as a backup implementation
+- **PyTorch + CUDA**: Model loading and GPU inference
+- **Gemini API**: English correction and expression refinement
+- **pytest**: Automated testing
+- **PyInstaller**: Windows application packaging
 
-```
+## Project Structure
+
+```text
 src/voice2text/
 ├── main.py
 ├── gui.py
@@ -35,73 +37,73 @@ src/voice2text/
 ├── text_processing.py
 │
 ├── transcription/
-│   ├── funasr_nano_transcriber.py   # 当前默认的 Fun-ASR-Nano 转写实现
-│   └── whisper_transcriber.py       # 保留的 Whisper 转写实现
+│   ├── funasr_nano_transcriber.py   # Current default Fun-ASR-Nano transcription implementation
+│   └── whisper_transcriber.py       # Retained Whisper transcription implementation
 │
 ├── ai/
-│   └── gemini_client.py             # Gemini API 客户端
+│   └── gemini_client.py             # Gemini API client
 │
 ├── english_correction/
-│   └── corrector.py                 # 英语纠错
+│   └── corrector.py                 # English correction
 │
 ├── application/
-│   └── service.py                   # 应用流程编排
+│   └── service.py                   # Application workflow orchestration
 │
 └── output/
-    └── markdown_writer.py            # Markdown 输出
+    └── markdown_writer.py           # Markdown output
 ```
 
-## 安装与运行
+## Installation & Usage
 
-### 环境要求
+### Requirements
 
 - Python 3.12+
 - Windows
-- NVIDIA GPU + CUDA（推荐用于模型推理）
+- NVIDIA GPU + CUDA (recommended for model inference)
 
-### 1. 创建虚拟环境
+### 1. Create a Virtual Environment
 
-```
+```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 2. 安装项目依赖
+### 2. Install Dependencies
 
-```
+```powershell
 pip install -e .
 ```
 
-如需使用 PyInstaller 打包 Windows 应用，可安装额外的构建依赖：
+To package the application for Windows with PyInstaller, install the optional build dependencies:
 
-```
+```powershell
 pip install -e ".[build]"
 ```
 
-### 3. 启动应用
+### 3. Run the Application
 
-```
+```powershell
 python -m voice2text.main
 ```
 
-### 4. 使用
+### 4. Usage
 
-1. 在 GUI 中选择需要转写的语音/录音文件。
-2. 选择自动检测、中文或英文语言模式。
-3. 如需使用 AI 英语纠错，在 GUI 中输入自己的 Gemini API Key 并开启 AI 纠错。
-4. 选择输出文件夹并开始转换。
-5. 转写结果将以 Markdown 格式保存到指定文件夹。
+1. Select a speech or audio recording file in the GUI.
+2. Choose automatic detection, Chinese, or English as the language mode.
+3. To use AI-powered English correction, enter your own Gemini API Key in the GUI and enable AI correction.
+4. Select an output folder and start the conversion.
+5. The transcription result will be saved as a Markdown file in the selected folder.
 
-## 测试
+## Testing
 
-项目使用 pytest 进行自动化测试。
+The project uses pytest for automated testing.
 
-```
+```powershell
 pytest
 ```
 
-当前测试结果：
+Current test result:
 
-```
+```text
 9 passed
 ```
