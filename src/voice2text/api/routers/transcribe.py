@@ -21,6 +21,8 @@ router = APIRouter()
 
 class TranscribeResponse(BaseModel):
     text: str
+    saved: bool
+
 @router.post(
     "/transcribe",
     response_model=TranscribeResponse
@@ -51,34 +53,42 @@ def transcribe_endpoint(
         print("临时文件路径：", audio_path)
 
     try:
-        transcribed_text, language = service.transcribe(
-            audio_path,
-            language_mode
-        )
+        try:
+            transcribed_text, language = service.transcribe(
+                audio_path,
+                language_mode
+            )
 
-        repository.save(
-            transcribed_text,
-            language,
-            audio.filename
-        )
+        except AudioProcessingError:
+            raise
 
-    except AudioProcessingError:
-        raise
+        except Exception:
+            logger.exception(
+                "Unexpected error during transcription"
+            )
+            raise HTTPException(
+                status_code=500,
+                detail="Internal server error"
+            )
 
-    except Exception:
-        logger.exception(
-            "Unexpected error during transcription"
-        )
-        raise HTTPException(
-            status_code=500,
-            detail="Internal server error"
+        save_success = True
+
+        try:
+            repository.save(
+                transcribed_text,
+                language,
+                audio.filename
+            )
+        except Exception:
+            save_success = False
+            logger.exception("Failed to save transcription")
+
+        return TranscribeResponse(
+            text=transcribed_text,
+            saved=save_success
         )
 
     finally:
         if os.path.exists(audio_path):
             os.remove(audio_path)
             print("临时文件已删除：", audio_path)
-
-    return TranscribeResponse(
-        text=transcribed_text
-    )

@@ -24,6 +24,10 @@ class FakeTranscriptionRepository:
     def save(self, text, language, filename):
         self.saved_records.append((text, language, filename))
 
+class FakeFailingRepository:
+    def save(self, text, language, filename):
+        raise RuntimeError("Database save failed")
+
 def override_get_voice2text_service():
     return FakeService()
 
@@ -98,11 +102,52 @@ def test_transcribe_success(fake_service_override):
 
     assert response.status_code == 200
     assert response.json() == {
-        "text": "Hello world"
+        "text": "Hello world",
+        "saved": True
     }
     assert fake_repository.saved_records == [
         ("Hello world", "English", "test.wav")
     ]
+
+def test_transcribe_save_failure():
+    app.dependency_overrides[
+        get_voice2text_service
+    ] = override_get_voice2text_service
+
+    app.dependency_overrides[
+        get_transcription_repository
+    ] = lambda: FakeFailingRepository()
+
+    try:
+        response = client.post(
+            "/transcribe",
+            files={
+                "audio": (
+                    "test.wav",
+                    b"fake audio data",
+                    "audio/wav"
+                )
+            },
+            data={
+                "language_mode": "English"
+            }
+        )
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "text": "Hello world",
+            "saved": False
+        }
+
+    finally:
+        app.dependency_overrides.pop(
+            get_voice2text_service,
+            None
+        )
+        app.dependency_overrides.pop(
+            get_transcription_repository,
+            None
+        )
 
 def test_transcribe_invalid_file_type(fake_service_override):
     response = client.post(
