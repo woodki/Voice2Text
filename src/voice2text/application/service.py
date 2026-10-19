@@ -11,6 +11,12 @@ class Voice2TextService:
         self.transcriber = transcriber
         self.writer = writer
 
+    def transcribe(self, audio_path, language_mode="自动检测"):
+        return self.transcriber.transcribe(
+            audio_path,
+            language_mode
+        )
+
     def process(
             self,
             audio_path,

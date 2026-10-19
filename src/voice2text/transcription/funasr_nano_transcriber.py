@@ -1,5 +1,6 @@
 from funasr import AutoModel
 import logging
+from voice2text.exceptions.errors import AudioProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +28,29 @@ class FunASRNanoTranscriber:
             model_language = None
             language = None
 
-        if model_language is None:
-            result = self.model.generate(
-                input=audio_path
+        try:
+
+            if model_language is None:
+                result = self.model.generate(
+                    input=audio_path
+                )
+            else:
+                result = self.model.generate(
+                    input=audio_path,
+                    language=model_language
+                )
+
+        except Exception as e:
+            logger.exception(
+                "FunASR 转写失败"
             )
-        else:
-            result = self.model.generate(
-                input=audio_path,
-                language=model_language
-            )
+
+            raise AudioProcessingError(
+                "FunASR transcription failed"
+            ) from e
+
+
+        print("FunASR result:", result)
 
         text = result[0]["text"]
 

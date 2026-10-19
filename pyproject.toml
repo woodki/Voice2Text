@@ -9,9 +9,13 @@ requires-python = ">=3.12"
 
 dependencies = [
     "funasr==1.4.15",
+    "torch==2.11.0",
     "torchaudio==2.11.0",
     "google-genai",
     "python-dotenv",
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
 ]
 
 [project.optional-dependencies]
